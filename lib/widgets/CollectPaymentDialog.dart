@@ -7,8 +7,8 @@ import 'package:smart_cap/widgets/BrandDivier.dart';
 import 'package:smart_cap/widgets/TaxiButton.dart';
 
 class CollectPayment extends StatelessWidget {
-  final String paymentMethod;
-  final int fares;
+  final String? paymentMethod;
+  final int? fares;
 
   CollectPayment({this.paymentMethod, this.fares});
 
@@ -28,7 +28,7 @@ class CollectPayment extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text('${paymentMethod.toUpperCase()} PAYMENT'),
+            Text('${paymentMethod!.toUpperCase()} PAYMENT'),
             const SizedBox(
               height: 20,
             ),

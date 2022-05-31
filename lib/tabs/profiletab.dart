@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:smart_cap/brand_colors.dart';
 import 'package:smart_cap/globalvariabels.dart';
 import 'package:smart_cap/screens/AddAmount.dart';
-import 'package:smart_cap/screens/login.dart';
+import 'package:smart_cap/screens/LogIn/loginpage.dart';
 import 'package:smart_cap/widgets/GradientButton.dart';
 
 class ProfileTab extends StatelessWidget {
-  const ProfileTab({Key key}) : super(key: key);
+  const ProfileTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,17 +47,17 @@ class ProfileTab extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  currentDriverInfo.fullName,
+                  currentDriverInfo!.fullName!,
                   style: const TextStyle(fontSize: 30, color: Colors.black),
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  currentDriverInfo.carType,
+                  currentDriverInfo!.carType!,
                   style: const TextStyle(fontSize: 23, color: Colors.black),
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  currentDriverInfo.carColor,
+                  currentDriverInfo!.carColor!,
                   style: const TextStyle(fontSize: 23, color: Colors.black),
                 ),
                 const SizedBox(height: 50),
@@ -73,6 +73,7 @@ class ProfileTab extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 15),
+                //TODO
                 TextButton(
                     onPressed: () {
                       FirebaseAuth.instance.signOut();

@@ -11,12 +11,11 @@ import 'package:smart_cap/screens/StartPage.dart';
 import 'package:smart_cap/widgets/GradientButton.dart';
 import 'package:smart_cap/widgets/ProgressDialog.dart';
 import '../globalvariabels.dart';
-import 'login.dart';
 
 class RegistrationPage extends StatefulWidget {
   static const String id = 'register';
 
-  const RegistrationPage({Key key}) : super(key: key);
+  const RegistrationPage({Key? key}) : super(key: key);
 
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
@@ -55,25 +54,24 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ProgressDialog(status: 'جاري تسجيل الحساب'),
     );
 
-    final User user = (await _auth
-            .createUserWithEmailAndPassword(
+    final UserCredential? user = await _auth
+        .createUserWithEmailAndPassword(
       email: emailController.text,
       password: passwordController.text,
     )
-            .catchError((ex) {
+        .catchError((ex) {
       Navigator.pop(context);
       showSnackBar('تحقق من الاسم او الرقم السري');
-    }))
-        .user;
+    });
 
     Navigator.pop(context);
     // check if user registration is successful
-    if (user != null) {
+    if (user!.user != null) {
       DatabaseReference newDriverRef =
-          FirebaseDatabase.instance.reference().child('drivers/${user.uid}');
+          FirebaseDatabase.instance.ref().child('drivers/${user.user!.uid}');
       DatabaseReference checkDriverRef = FirebaseDatabase.instance
-          .reference()
-          .child('approveDriver/${user.uid}');
+          .ref()
+          .child('approveDriver/${user.user!.uid}');
 
       //Prepare data to be saved on users table
       Map userMap = {
@@ -100,7 +98,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       checkDriverRef.set(checkDriverMap);
       newDriverRef.set(userMap);
 
-      currentFirebaseUser = user;
+      currentFirebaseUser = user.user;
 
       //Take the user to the mainPage
       Navigator.pushNamedAndRemoveUntil(
@@ -590,15 +588,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       const SizedBox(
                         height: 30,
                       ),
-                      TextButton(
-                          onPressed: () {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, LoginPage.id, (route) => false);
-                          },
-                          child: const Text(
-                            'you have an account, Login here',
-                            style: TextStyle(color: Colors.black),
-                          )),
+                      // TextButton(
+                      //     onPressed: () {
+                      //       Navigator.pushNamedAndRemoveUntil(
+                      //           context, LoginPage.id, (route) => false);
+                      //     },
+                      //     child: const Text(
+                      //       'you have an account, Login here',
+                      //       style: TextStyle(color: Colors.black),
+                      //     )),
                     ],
                   ),
                 ),

@@ -8,20 +8,20 @@ import '../brand_colors.dart';
 class MainPage extends StatefulWidget {
   static const String id = 'mainpage';
 
-  const MainPage({Key key}) : super(key: key);
+  const MainPage({Key? key}) : super(key: key);
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
-  TabController tabController;
+  TabController? tabController;
   int selecetdIndex = 0;
 
   void onItemClicked(int index) {
     setState(() {
       selecetdIndex = index;
-      tabController.index = selecetdIndex;
+      tabController!.index = selecetdIndex;
     });
   }
 
@@ -33,7 +33,7 @@ class _MainPageState extends State<MainPage>
 
   @override
   void dispose() {
-    tabController.dispose();
+    tabController!.dispose();
     super.dispose();
   }
 

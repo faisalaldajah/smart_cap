@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class TaxiButton extends StatelessWidget {
-  final String title;
-  final Color color;
-  final Function onPressed;
+  final String? title;
+  final Color? color;
+  final VoidCallback onPressed;
 
-  const TaxiButton({Key key, this.title, this.onPressed, this.color})
+  const TaxiButton({Key? key, this.title,required this.onPressed, this.color})
       : super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class TaxiButton extends StatelessWidget {
         height: 50,
         child: Center(
           child: Text(
-            title,
+            title!,
             style: const TextStyle(fontSize: 18, fontFamily: 'Brand-Bold'),
           ),
         ),

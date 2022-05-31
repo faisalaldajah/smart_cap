@@ -8,13 +8,10 @@ import 'package:smart_cap/screens/newtripspage.dart';
 import 'package:smart_cap/widgets/BrandDivier.dart';
 import 'package:smart_cap/widgets/ProgressDialog.dart';
 import 'package:smart_cap/widgets/TaxiButton.dart';
-import 'package:smart_cap/widgets/TaxiOutlineButton.dart';
-import 'package:toast/toast.dart';
-
 class NotificationDialog extends StatelessWidget {
   final TripDetails tripDetails;
 
-  const NotificationDialog({Key key, this.tripDetails}) : super(key: key);
+  const NotificationDialog({Key? key,required this.tripDetails}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +63,7 @@ class NotificationDialog extends StatelessWidget {
                       ),
                       Expanded(
                           child: Text(
-                        tripDetails.pickupAddress,
+                        tripDetails.pickupAddress!,
                         style: const TextStyle(fontSize: 18),
                       ))
                     ],
@@ -87,7 +84,7 @@ class NotificationDialog extends StatelessWidget {
                       ),
                       Expanded(
                           child: Text(
-                        tripDetails.destinationAddress,
+                        tripDetails.destinationAddress!,
                         style: const TextStyle(fontSize: 18),
                       ))
                     ],
@@ -108,7 +105,7 @@ class NotificationDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    child: TaxiOutlineButton(
+                    child: TaxiButton(
                       title: 'DECLINE',
                       color: BrandColors.colorPrimary,
                       onPressed: () async {
@@ -151,18 +148,18 @@ class NotificationDialog extends StatelessWidget {
     );
 
     DatabaseReference newRideRef = FirebaseDatabase.instance
-        .reference()
-        .child('drivers/${currentFirebaseUser.uid}/newtrip');
-    newRideRef.once().then((DataSnapshot snapshot) {
+        .ref()
+        .child('drivers/${currentFirebaseUser!.uid}/newtrip');
+    newRideRef.once().then((snapshot) {
       Navigator.pop(context);
       Navigator.pop(context);
 
       String thisRideID = '';
-      if (snapshot.value != null) {
-        thisRideID = snapshot.value.toString();
+      if (snapshot.snapshot.value != null) {
+        thisRideID = snapshot.snapshot.value.toString();
       } else {
-        Toast.show('Ride not found', context,
-            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+        // Toast.show('Ride not found', context,
+        //     duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
       }
 
       if (thisRideID == tripDetails.rideID) {
@@ -176,14 +173,14 @@ class NotificationDialog extends StatelessWidget {
               ),
             ));
       } else if (thisRideID == 'cancelled') {
-        Toast.show('Ride has been cancelled', context,
-            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+        // Toast.show('Ride has been cancelled', context,
+        //     duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
       } else if (thisRideID == 'timeout') {
-        Toast.show('Ride has timed out', context,
-            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+        // Toast.show('Ride has timed out', context,
+        //     duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
       } else {
-        Toast.show('Ride not found', context,
-            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+        // Toast.show('Ride not found', context,
+        //     duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
       }
     });
   }

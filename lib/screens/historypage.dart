@@ -6,7 +6,7 @@ import 'package:smart_cap/widgets/BrandDivier.dart';
 import 'package:smart_cap/widgets/HistoryTile.dart';
 
 class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key key}) : super(key: key);
+  const HistoryPage({Key? key}) : super(key: key);
 
   @override
   _HistoryPageState createState() => _HistoryPageState();

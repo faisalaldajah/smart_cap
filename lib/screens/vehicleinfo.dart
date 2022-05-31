@@ -10,7 +10,7 @@ import '../globalvariabels.dart';
 class VehicleInfoPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  VehicleInfoPage({Key key}) : super(key: key);
+  VehicleInfoPage({Key? key}) : super(key: key);
 
   void showSnackBar(String title) {
     final snackbar = SnackBar(
@@ -21,7 +21,7 @@ class VehicleInfoPage extends StatelessWidget {
       ),
     );
     // ignore: deprecated_member_use
-    scaffoldKey.currentState.showSnackBar(snackbar);
+    scaffoldKey.currentState!.showSnackBar(snackbar);
   }
 
   static const String id = 'vehicleinfo';
@@ -31,9 +31,9 @@ class VehicleInfoPage extends StatelessWidget {
   var vehicleNumberController = TextEditingController();
 
   void updateProfile(context) {
-    String id = currentFirebaseUser.uid;
+    String id = currentFirebaseUser!.uid;
     DatabaseReference driverRef = FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child('drivers/$id/vehicle_details');
 
     Map map = {

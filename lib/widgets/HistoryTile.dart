@@ -4,8 +4,8 @@ import 'package:smart_cap/datamodels/history.dart';
 import 'package:smart_cap/helpers/helpermethods.dart';
 
 class HistoryTile extends StatelessWidget {
-  final History history;
-  const HistoryTile({Key key, this.history}) : super(key: key);
+  final History? history;
+  const HistoryTile({Key? key, this.history}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class HistoryTile extends StatelessWidget {
                   ),
                   Expanded(
                       child: Text(
-                    history.pickup,
+                    history!.pickup!,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontSize: 18),
                   )),
@@ -36,7 +36,7 @@ class HistoryTile extends StatelessWidget {
                     width: 5,
                   ),
                   Text(
-                    'JD ${history.fares}',
+                    'JD ${history!.fares}',
                     style: const TextStyle(
                       fontFamily: 'Brand-Bold',
                       fontSize: 16,
@@ -60,7 +60,7 @@ class HistoryTile extends StatelessWidget {
                     width: 18,
                   ),
                   Text(
-                    history.destination,
+                    history!.destination!,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontSize: 18),
                   ),
@@ -70,7 +70,7 @@ class HistoryTile extends StatelessWidget {
                 height: 15,
               ),
               Text(
-                HelperMethods.formatMyDate(history.createdAt),
+                HelperMethods.formatMyDate(history!.createdAt!),
                 style: const TextStyle(color: BrandColors.colorTextLight),
               ),
             ],

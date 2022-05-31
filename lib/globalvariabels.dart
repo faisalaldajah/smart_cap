@@ -10,7 +10,7 @@ import 'package:smart_cap/datamodels/driver.dart';
 import 'package:smart_cap/screens/UnRegistration.dart';
 import 'package:smart_cap/screens/mainpage.dart';
 
-User currentFirebaseUser = FirebaseAuth.instance.currentUser;
+User? currentFirebaseUser;
 
 const CameraPosition googlePlex = CameraPosition(
   target: LatLng(31.954066, 35.931066),
@@ -18,17 +18,17 @@ const CameraPosition googlePlex = CameraPosition(
 );
 String mapKey = 'AIzaSyALY906rdwqFYGffSyDo-j3OOAPdGUoscA';
 
-StreamSubscription<Position> homeTabPositionStream;
+StreamSubscription<Position>? homeTabPositionStream;
 
-StreamSubscription<Position> ridePositionStream;
+StreamSubscription<Position>? ridePositionStream;
 
-String driverCarStyle;
+String? driverCarStyle;
 
-Position currentPosition = Position();
+Position? currentPosition;
 
-DatabaseReference rideRef;
+DatabaseReference? rideRef;
 
-Driver currentDriverInfo;
+Driver? currentDriverInfo;
 
 bool isAvailable = false;
 
@@ -37,19 +37,19 @@ String availabilityTitle = 'Go Online';
 Color availabilityColor = BrandColors.colorAccent1;
 
 DatabaseReference driversIsAvailableRef = FirebaseDatabase.instance
-    .reference()
-    .child('drivers/${currentFirebaseUser.uid}/driversIsAvailable');
+    .ref()
+    .child('drivers/${currentFirebaseUser!.uid}/driversIsAvailable');
 
 void getCurrentDriverInfo(context) async {
   // ignore: await_only_futures
-  currentFirebaseUser = await FirebaseAuth.instance.currentUser;
+  currentFirebaseUser = FirebaseAuth.instance.currentUser!;
   DatabaseReference driverRef = FirebaseDatabase.instance
-      .reference()
-      .child('drivers/${currentFirebaseUser.uid}');
-  driverRef.once().then((DataSnapshot snapshot) {
-    if (snapshot.value != null) {
-      currentDriverInfo = Driver.fromSnapshot(snapshot);
-      if (currentDriverInfo.approveDriver == 'false') {
+      .ref()
+      .child('drivers/${currentFirebaseUser!.uid}');
+  driverRef.once().then((snapshot) {
+    if (snapshot.snapshot.value != null) {
+      //currentDriverInfo = Driver.fromSnapshot(snapshot);
+      if (currentDriverInfo!.approveDriver == 'false') {
         Navigator.pushNamedAndRemoveUntil(
             context, UnRegistration.id, (route) => false);
       } else {
@@ -62,14 +62,14 @@ void getCurrentDriverInfo(context) async {
 
 // ignore: unused_local_variable
 DatabaseReference tripRequestRef = FirebaseDatabase.instance
-    .reference()
-    .child('drivers/${currentFirebaseUser.uid}/newtrip');
+    .ref()
+    .child('drivers/${currentFirebaseUser!.uid}/newtrip');
 
 // ignore: non_constant_identifier_names
 void GoOnline() {
-  Geofire.initialize(currentDriverInfo.taxiType);
-  Geofire.setLocation(currentFirebaseUser.uid, currentPosition.latitude,
-      currentPosition.longitude);
+  Geofire.initialize(currentDriverInfo!.taxiType!);
+  Geofire.setLocation(currentFirebaseUser!.uid, currentPosition!.latitude,
+      currentPosition!.longitude);
 
   tripRequestRef.set('waiting');
 
@@ -78,8 +78,8 @@ void GoOnline() {
 
 // ignore: non_constant_identifier_names
 void GoOffline() {
-  Geofire.removeLocation(currentFirebaseUser.uid);
-  if (tripRequestRef.path != null) {
+  Geofire.removeLocation(currentFirebaseUser!.uid);
+  if (tripRequestRef.path.isNotEmpty) {
     tripRequestRef.onDisconnect();
   }
   tripRequestRef.remove();
@@ -95,5 +95,5 @@ void showSnackBar(String title) {
     ),
   );
   // ignore: deprecated_member_use
-  scaffoldKey.currentState.showSnackBar(snackbar);
+  scaffoldKey.currentState!.showSnackBar(snackbar);
 }

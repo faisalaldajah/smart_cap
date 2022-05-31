@@ -3,8 +3,8 @@ import 'package:smart_cap/brand_colors.dart';
 import 'package:smart_cap/screens/mainpage.dart';
 
 class Dialogs extends StatelessWidget {
-  final String status;
-  const Dialogs({Key key, this.status}) : super(key: key);
+  final String? status;
+  const Dialogs({Key? key, this.status}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class OtherProgressDialog extends StatelessWidget {
-  final String status;
-  const OtherProgressDialog({Key key, this.status}) : super(key: key);
+  final String? status;
+  const OtherProgressDialog({Key? key, this.status}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class OtherProgressDialog extends StatelessWidget {
                       width: 5,
                     ),
                     Text(
-                      status,
+                      status!,
                       style: const TextStyle(fontSize: 15),
                     ),
                   ],

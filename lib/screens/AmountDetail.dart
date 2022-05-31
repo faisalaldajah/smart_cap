@@ -6,7 +6,7 @@ import 'package:smart_cap/widgets/Dialogs.dart';
 import 'package:smart_cap/widgets/GradientButton.dart';
 
 class AmountDetail extends StatefulWidget {
-  const AmountDetail({Key key, this.amount}) : super(key: key);
+  const AmountDetail({Key? key,required this.amount}) : super(key: key);
   final String amount;
 
   @override
@@ -80,8 +80,8 @@ class _AmountDetailState extends State<AmountDetail> {
       return;
     } else {
       DatabaseReference amountRef = FirebaseDatabase.instance
-          .reference()
-          .child('drivers/${currentFirebaseUser.uid}/amount');
+          .ref()
+          .child('drivers/${currentFirebaseUser!.uid}/amount');
       Map userAmount = {
         'transNumber': transNumberController.text,
         'amount': widget.amount,

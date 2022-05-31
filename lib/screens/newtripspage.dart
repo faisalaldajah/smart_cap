@@ -17,14 +17,14 @@ import '../brand_colors.dart';
 import '../globalvariabels.dart';
 
 class NewTripPage extends StatefulWidget {
-  final TripDetails tripDetails;
-  const NewTripPage({Key key, this.tripDetails}) : super(key: key);
+  final TripDetails? tripDetails;
+  const NewTripPage({Key? key, this.tripDetails}) : super(key: key);
   @override
   _NewTripPageState createState() => _NewTripPageState();
 }
 
 class _NewTripPageState extends State<NewTripPage> {
-  GoogleMapController rideMapController;
+  GoogleMapController? rideMapController;
   final Completer<GoogleMapController> _controller = Completer();
   double mapPaddingBottom = 0;
 
@@ -36,12 +36,10 @@ class _NewTripPageState extends State<NewTripPage> {
   PolylinePoints polylinePoints = PolylinePoints();
 
   var geoLocator = Geolocator();
-  var locationOptions =
-      const LocationOptions(accuracy: LocationAccuracy.bestForNavigation);
 
-  BitmapDescriptor movingMarkerIcon;
+  BitmapDescriptor? movingMarkerIcon;
 
-  Position myPosition;
+  Position? myPosition;
 
   String status = 'accepted';
 
@@ -53,7 +51,7 @@ class _NewTripPageState extends State<NewTripPage> {
 
   Color buttonColor = BrandColors.colorGreen;
 
-  Timer timer;
+  Timer? timer;
 
   int durationCounter = 0;
 
@@ -106,9 +104,9 @@ class _NewTripPageState extends State<NewTripPage> {
               });
 
               var currentLatLng =
-                  LatLng(currentPosition.latitude, currentPosition.longitude);
-              var pickupLatLng = widget.tripDetails.pickup;
-              await getDirection(currentLatLng, pickupLatLng);
+                  LatLng(currentPosition!.latitude, currentPosition!.longitude);
+              var pickupLatLng = widget.tripDetails!.pickup;
+              await getDirection(currentLatLng, pickupLatLng!);
 
               getLocationUpdates();
             },
@@ -158,7 +156,7 @@ class _NewTripPageState extends State<NewTripPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
-                            widget.tripDetails.riderName,
+                            widget.tripDetails!.riderName!,
                             style: const TextStyle(
                                 fontSize: 22, fontFamily: 'Brand-Bold'),
                           ),
@@ -166,8 +164,9 @@ class _NewTripPageState extends State<NewTripPage> {
                             padding: const EdgeInsets.only(right: 10),
                             child: IconButton(
                               icon: const Icon(Icons.call),
-                              onPressed: () {
-                                launch('tel:${widget.tripDetails.riderPhone}');
+                              onPressed: () async {
+                                await launch(
+                                    'tel:${widget.tripDetails!.riderPhone}');
                               },
                             ),
                           ),
@@ -188,7 +187,7 @@ class _NewTripPageState extends State<NewTripPage> {
                           ),
                           Expanded(
                             child: Text(
-                              widget.tripDetails.pickupAddress,
+                              widget.tripDetails!.pickupAddress!,
                               style: const TextStyle(fontSize: 18),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -210,7 +209,7 @@ class _NewTripPageState extends State<NewTripPage> {
                           ),
                           Expanded(
                             child: Text(
-                              widget.tripDetails.destinationAddress,
+                              widget.tripDetails!.destinationAddress!,
                               style: const TextStyle(fontSize: 18),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -226,21 +225,21 @@ class _NewTripPageState extends State<NewTripPage> {
                         onPressed: () async {
                           if (status == 'accepted') {
                             status = 'arrived';
-                            rideRef.child('status').set(('arrived'));
+                            rideRef!.child('status').set(('arrived'));
                             setState(() {
                               buttonTitle = 'START TRIP';
                               buttonColor = BrandColors.colorAccent1;
                             });
                             HelperMethods.showProgressDialog(context);
-                            await getDirection(widget.tripDetails.pickup,
-                                widget.tripDetails.destination);
+                            await getDirection(widget.tripDetails!.pickup!,
+                                widget.tripDetails!.destination!);
                             Navigator.pop(context);
                           } else if (status == 'arrived') {
                             status = 'ontrip';
-                            rideRef.child('status').set('ontrip');
+                            rideRef!.child('status').set('ontrip');
                             setState(() {
                               buttonTitle = 'END TRIP';
-                              buttonColor = Colors.red[900];
+                              buttonColor = Colors.red;
                             });
                             startTimer();
                           } else if (status == 'ontrip') {
@@ -260,36 +259,38 @@ class _NewTripPageState extends State<NewTripPage> {
   }
 
   void acceptTrip() {
-    String rideID = widget.tripDetails.rideID;
+    String rideID = widget.tripDetails!.rideID!;
     rideRef =
-        FirebaseDatabase.instance.reference().child('rideRequest/$rideID');
+        FirebaseDatabase.instance.ref().child('rideRequest/$rideID');
 
-    rideRef.child('status').set('accepted');
-    rideRef.child('driver_name').set(currentDriverInfo.fullName);
-    rideRef
+    rideRef!.child('status').set('accepted');
+    rideRef!.child('driver_name').set(currentDriverInfo!.fullName);
+    rideRef!
         .child('car_details')
-        .set('${currentDriverInfo.carColor} - ${currentDriverInfo.carType}');
-    rideRef.child('driver_phone').set(currentDriverInfo.phone);
-    rideRef.child('driver_id').set(currentDriverInfo.id);
+        .set('${currentDriverInfo!.carColor} - ${currentDriverInfo!.carType}');
+    rideRef!.child('driver_phone').set(currentDriverInfo!.phone);
+    rideRef!.child('driver_id').set(currentDriverInfo!.id);
 
     Map locationMap = {
-      'latitude': currentPosition.latitude.toString(),
-      'longitude': currentPosition.longitude.toString(),
+      'latitude': currentPosition!.latitude.toString(),
+      'longitude': currentPosition!.longitude.toString(),
     };
 
-    rideRef.child('driver_location').set(locationMap);
+    rideRef!.child('driver_location').set(locationMap);
 
     DatabaseReference historyRef = FirebaseDatabase.instance
-        .reference()
-        .child('drivers/${currentFirebaseUser.uid}/history/$rideID');
+        .ref()
+        .child('drivers/${currentFirebaseUser!.uid}/history/$rideID');
     historyRef.set(true);
   }
 
   void getLocationUpdates() {
     LatLng oldPosition = const LatLng(0, 0);
 
-    ridePositionStream = geoLocator
-        .getPositionStream(locationOptions)
+    ridePositionStream = Geolocator.getPositionStream(
+            locationSettings: const LocationSettings(
+                accuracy: LocationAccuracy.bestForNavigation,
+                distanceFilter: 4))
         .listen((Position position) {
       myPosition = position;
       currentPosition = position;
@@ -298,15 +299,15 @@ class _NewTripPageState extends State<NewTripPage> {
       var rotation = MapKitHelper.getMarkerRotation(oldPosition.latitude,
           oldPosition.longitude, pos.latitude, pos.longitude);
       Marker movingMaker = Marker(
-          markerId: MarkerId('moving'),
+          markerId: const MarkerId('moving'),
           position: pos,
-          icon: movingMarkerIcon,
+          icon: movingMarkerIcon!,
           rotation: rotation,
           infoWindow: const InfoWindow(title: 'Current Location'));
 
       setState(() {
         CameraPosition cp = CameraPosition(target: pos, zoom: 17);
-        rideMapController.animateCamera(CameraUpdate.newCameraPosition(cp));
+        rideMapController!.animateCamera(CameraUpdate.newCameraPosition(cp));
 
         _markers.removeWhere((marker) => marker.markerId.value == 'moving');
         _markers.add(movingMaker);
@@ -317,10 +318,10 @@ class _NewTripPageState extends State<NewTripPage> {
       updateTripDetails();
 
       Map locationMap = {
-        'latitude': myPosition.latitude.toString(),
-        'longitude': myPosition.longitude.toString(),
+        'latitude': myPosition!.latitude.toString(),
+        'longitude': myPosition!.longitude.toString(),
       };
-      rideRef.child('driver_location').set(locationMap);
+      rideRef!.child('driver_location').set(locationMap);
     });
   }
 
@@ -332,23 +333,21 @@ class _NewTripPageState extends State<NewTripPage> {
         return;
       }
 
-      var positionLatLng = LatLng(myPosition.latitude, myPosition.longitude);
+      var positionLatLng = LatLng(myPosition!.latitude, myPosition!.longitude);
       LatLng destinationLatLng;
 
       if (status == 'accepted') {
-        destinationLatLng = widget.tripDetails.pickup;
+        destinationLatLng = widget.tripDetails!.pickup!;
       } else {
-        destinationLatLng = widget.tripDetails.destination;
+        destinationLatLng = widget.tripDetails!.destination!;
       }
 
       var directionDetails = await HelperMethods.getDirectionDetails(
           positionLatLng, destinationLatLng);
 
-      if (directionDetails.distanceText != null) {
-        setState(() {
-          durationString = directionDetails.durationText;
-        });
-      }
+      setState(() {
+        durationString = directionDetails.durationText!;
+      });
       isRequestingDirection = false;
     }
   }
@@ -369,7 +368,7 @@ class _NewTripPageState extends State<NewTripPage> {
 
     PolylinePoints polylinePoints = PolylinePoints();
     List<PointLatLng> results =
-        polylinePoints.decodePolyline(thisDetails.encodedPoints);
+        polylinePoints.decodePolyline(thisDetails.encodedPoints!);
 
     polylineCoordinates.clear();
     if (results.isNotEmpty) {
@@ -384,7 +383,7 @@ class _NewTripPageState extends State<NewTripPage> {
 
     setState(() {
       Polyline polyline = Polyline(
-        polylineId: PolylineId('polyid'),
+        polylineId: const PolylineId('polyid'),
         color: const Color.fromARGB(255, 95, 109, 237),
         points: polylineCoordinates,
         jointType: JointType.round,
@@ -420,16 +419,16 @@ class _NewTripPageState extends State<NewTripPage> {
           LatLngBounds(southwest: pickupLatLng, northeast: destinationLatLng);
     }
 
-    rideMapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 70));
+    rideMapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 70));
 
     Marker pickupMarker = Marker(
-      markerId: MarkerId('pickup'),
+      markerId: const MarkerId('pickup'),
       position: pickupLatLng,
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
     );
 
     Marker destinationMarker = Marker(
-      markerId: MarkerId('destination'),
+      markerId: const MarkerId('destination'),
       position: destinationLatLng,
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
     );
@@ -440,7 +439,7 @@ class _NewTripPageState extends State<NewTripPage> {
     });
 
     Circle pickupCircle = Circle(
-      circleId: CircleId('pickup'),
+      circleId: const CircleId('pickup'),
       strokeColor: Colors.green,
       strokeWidth: 3,
       radius: 12,
@@ -449,7 +448,7 @@ class _NewTripPageState extends State<NewTripPage> {
     );
 
     Circle destinationCircle = Circle(
-      circleId: CircleId('destination'),
+      circleId: const CircleId('destination'),
       strokeColor: BrandColors.colorAccentPurple,
       strokeWidth: 3,
       radius: 12,
@@ -471,30 +470,30 @@ class _NewTripPageState extends State<NewTripPage> {
   }
 
   void endTrip() async {
-    timer.cancel();
+    timer!.cancel();
 
     HelperMethods.showProgressDialog(context);
 
-    var currentLatLng = LatLng(myPosition.latitude, myPosition.longitude);
+    var currentLatLng = LatLng(myPosition!.latitude, myPosition!.longitude);
 
     var directionDetails = await HelperMethods.getDirectionDetails(
-        widget.tripDetails.pickup, currentLatLng);
+        widget.tripDetails!.pickup!, currentLatLng);
 
     Navigator.pop(context);
 
     int fares = HelperMethods.estimateFares(directionDetails, durationCounter);
 
-    rideRef.child('fares').set(fares.toString());
+    rideRef!.child('fares').set(fares.toString());
 
-    rideRef.child('status').set('ended');
+    rideRef!.child('status').set('ended');
 
-    ridePositionStream.cancel();
+    ridePositionStream!.cancel();
 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) => CollectPayment(
-        paymentMethod: widget.tripDetails.paymentMethod,
+        paymentMethod: widget.tripDetails!.paymentMethod,
         fares: fares,
       ),
     );
@@ -504,11 +503,11 @@ class _NewTripPageState extends State<NewTripPage> {
 
   void topUpEarnings(int fares) {
     DatabaseReference earningsRef = FirebaseDatabase.instance
-        .reference()
-        .child('drivers/${currentFirebaseUser.uid}/earnings');
-    earningsRef.once().then((DataSnapshot snapshot) {
-      if (snapshot.value != null) {
-        double oldEarnings = double.parse(snapshot.value.toString());
+        .ref()
+        .child('drivers/${currentFirebaseUser!.uid}/earnings');
+    earningsRef.once().then((snapshot) {
+      if (snapshot.snapshot.value != null) {
+        double oldEarnings = double.parse(snapshot.snapshot.value.toString());
 
         double adjustedEarnings = (fares.toDouble() * 0.85) + oldEarnings;
 

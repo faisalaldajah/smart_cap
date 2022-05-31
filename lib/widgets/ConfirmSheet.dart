@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:smart_cap/brand_colors.dart';
 import 'package:smart_cap/widgets/TaxiButton.dart';
-import 'package:smart_cap/widgets/TaxiOutlineButton.dart';
 
 class ConfirmSheet extends StatelessWidget {
-  final String title;
-  final String subtitle;
+  final String? title;
+  final String? subtitle;
   final VoidCallback onPressed;
 
-  const ConfirmSheet({Key key, this.title, this.subtitle, this.onPressed})
+  const ConfirmSheet({Key? key, this.title, this.subtitle,required this.onPressed})
       : super(key: key);
 
   @override
@@ -38,7 +37,7 @@ class ConfirmSheet extends StatelessWidget {
               height: 10,
             ),
             Text(
-              title,
+              title!,
               textAlign: TextAlign.center,
               style: const TextStyle(
                   fontSize: 22,
@@ -49,7 +48,7 @@ class ConfirmSheet extends StatelessWidget {
               height: 20,
             ),
             Text(
-              subtitle,
+              subtitle!,
               textAlign: TextAlign.center,
               style: const TextStyle(color: BrandColors.colorTextLight),
             ),
@@ -59,7 +58,7 @@ class ConfirmSheet extends StatelessWidget {
             Row(
               children: <Widget>[
                 Expanded(
-                  child: TaxiOutlineButton(
+                  child: TaxiButton(
                     title: 'Back',
                     color: BrandColors.colorLightGrayFair,
                     onPressed: () {

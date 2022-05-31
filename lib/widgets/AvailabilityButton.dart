@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AvailabilityButton extends StatelessWidget {
-  final String title;
-  final Color color;
-  final Function onPressed;
+  final String? title;
+  final Color? color;
+  final VoidCallback onPressed;
 
-  const AvailabilityButton({Key key, this.title, this.onPressed, this.color})
+  const AvailabilityButton({Key? key, this.title,required this.onPressed, this.color})
       : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class AvailabilityButton extends StatelessWidget {
         width: 200,
         child: Center(
           child: Text(
-            title,
+            title!,
             style: const TextStyle(fontSize: 20, fontFamily: 'Brand-Bold'),
           ),
         ),

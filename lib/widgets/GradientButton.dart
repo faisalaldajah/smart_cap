@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../brand_colors.dart';
 
 class GradientButton extends StatelessWidget {
-  final String title;
+  final String? title;
   final VoidCallback onPressed;
 
-  const GradientButton({Key key, this.title, this.onPressed}) : super(key: key);
+  const GradientButton({Key? key, this.title,required this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class GradientButton extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         child: Text(
-          title,
+          title!,
           style: const TextStyle(fontSize: 25, color: Colors.white),
         ),
       ),

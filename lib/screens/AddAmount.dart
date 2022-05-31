@@ -3,7 +3,7 @@ import 'package:smart_cap/brand_colors.dart';
 import 'package:smart_cap/screens/AmountDetail.dart';
 
 class AddAmount extends StatelessWidget {
-  const AddAmount({Key key}) : super(key: key);
+  const AddAmount({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -135,8 +135,9 @@ class AddAmount extends StatelessWidget {
 }
 
 class PriceBtn extends StatelessWidget {
-  const PriceBtn({Key key, this.cardPrice, this.onPressed}) : super(key: key);
-  final String cardPrice;
+  const PriceBtn({Key? key, this.cardPrice, required this.onPressed})
+      : super(key: key);
+  final String? cardPrice;
   final Function onPressed;
   @override
   Widget build(BuildContext context) {

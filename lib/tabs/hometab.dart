@@ -13,26 +13,24 @@ import 'package:smart_cap/widgets/PermissionLocation.dart';
 import '../globalvariabels.dart';
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({Key key}) : super(key: key);
+  const HomeTab({Key? key}) : super(key: key);
 
   @override
   _HomeTabState createState() => _HomeTabState();
 }
 
 class _HomeTabState extends State<HomeTab> {
-  GoogleMapController mapController;
+  GoogleMapController? mapController;
   final Completer<GoogleMapController> _controller = Completer();
 
   var geoLocator = Geolocator();
-  var locationOptions = const LocationOptions(
-      accuracy: LocationAccuracy.bestForNavigation, distanceFilter: 4);
 
   void getCurrentPosition() async {
-    Position position = await Geolocator().getCurrentPosition(
+    Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
     currentPosition = position;
     LatLng pos = LatLng(position.latitude, position.longitude);
-    mapController.animateCamera(CameraUpdate.newLatLng(pos));
+    mapController!.animateCamera(CameraUpdate.newLatLng(pos));
   }
 
   void notificationData() {
@@ -93,7 +91,7 @@ class _HomeTabState extends State<HomeTab> {
                             ? 'You are about to become available to receive trip requests'
                             : 'you will stop receiving new trip requests',
                         onPressed: () {
-                          if (!isAvailable && tripRequestRef != null) {
+                          if (!isAvailable) {
                             GoOnline();
                             getLocationUpdates();
                             setState(() {
@@ -134,18 +132,20 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   void getLocationUpdates() {
-    homeTabPositionStream = geoLocator
-        .getPositionStream(locationOptions)
+    homeTabPositionStream = Geolocator.getPositionStream(
+            locationSettings: const LocationSettings(
+                accuracy: LocationAccuracy.bestForNavigation,
+                distanceFilter: 4))
         .listen((Position position) {
       currentPosition = position;
 
       if (isAvailable) {
         Geofire.setLocation(
-            currentFirebaseUser.uid, position.latitude, position.longitude);
+            currentFirebaseUser!.uid, position.latitude, position.longitude);
       }
 
       LatLng pos = LatLng(position.latitude, position.longitude);
-      mapController.animateCamera(CameraUpdate.newLatLng(pos));
+      mapController!.animateCamera(CameraUpdate.newLatLng(pos));
     });
   }
 }
